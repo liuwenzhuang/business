@@ -8,19 +8,19 @@ const config = {
     "development": {
       "extraBabelPlugins": [
         "dva-hmr"
-      ]
+      ],
     },
     "production": {
       define: {
         "process.env.NODE_ENV": process.env.NODE_ENV,
         "process.env.SERVER_ENV": process.env.SERVER_ENV
-      }
+      },
+      "publicPath": "./",
     }
   },
   "html": {
     "template": "./src/index.ejs"
   },
-  "publicPath": "./",
 }
 
 export default config;

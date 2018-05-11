@@ -3,8 +3,12 @@
   "scripts": {
     "start": "roadhog server",
     "build": "cross-env NODE_ENV=production SERVER_ENV=ybz.yonyoucloud.com roadhog build",
+    "publish_234": "cross-env NODE_ENV=production SERVER_ENV=ybz.yonyoucloud.com roadhog build && scp -r ./dist/* root@10.3.14.230:/server/featureresources/ybz_business && ssh root@10.3.14.230 scp -rp  /server/featureresources/ybz_business root@10.3.14.244:/server/featureresources/ && ssh root@10.3.14.230 docker cp /server/featureresources/ybz_business ybz_nginx:/server/featureresources/ && ssh root@10.3.14.244 docker cp /server/featureresources/ybz_business ybz_nginx:/server/featureresources/",
+    "publish_244": "cross-env NODE_ENV=production SERVER_ENV=ybz.yonyoucloud.com roadhog build && scp -r ./dist/* root@10.3.14.230:/server/testresources/ybz_business && ssh root@10.3.14.230 scp -rp  /server/testresources/ybz_business root@10.3.14.244:/server/testresources/ && ssh root@10.3.14.230 docker cp /server/testresources/ybz_business ybz_nginx:/server/testresources/ && ssh root@10.3.14.244 docker cp /server/testresources/ybz_business ybz_nginx:/server/testresources/",
     "lint": "eslint --ext .js src test",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "prettier": "prettier --write ./src/**/**/**/*",
+    "prettier-watch": "onchange './src/**/*.js' -- prettier --write {{changed}}"
   },
   "dependencies": {
     "antd": "^3.4.3",
@@ -24,6 +28,7 @@
   "devDependencies": {
     "babel-plugin-dva-hmr": "^0.3.2",
     "cross-env": "^5.1.4",
+    "dva-model-extend": "^0.1.2",
     "eslint": "^4.14.0",
     "eslint-config-umi": "^0.1.1",
     "eslint-plugin-flowtype": "^2.34.1",
@@ -31,6 +36,7 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
     "husky": "^0.12.0",
+    "prettier": "1.12.1",
     "redbox-react": "^1.4.3",
     "roadhog": "^2.0.0"
   }

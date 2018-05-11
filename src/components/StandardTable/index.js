@@ -1,5 +1,5 @@
-import React, { PureComponent, Fragment } from 'react';
-import { Table, Alert, Form, Row, Col, Input } from 'antd';
+import React, { PureComponent } from 'react';
+import { Table, Form, Row, Col, Input } from 'antd';
 import styles from './index.less';
 
 const FormItem = Form.Item;
@@ -64,7 +64,7 @@ class StandardTable extends PureComponent {
     this.props.onChange(pagination, filters, sorter, searchStr);
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     e.preventDefault();
     const { form } = this.props;
     form.validateFields((err, fieldsValue) => {
@@ -75,7 +75,7 @@ class StandardTable extends PureComponent {
       const { searchStr } = fieldsValue;
       this.props.onSearch(searchStr);
     });
-  }
+  };
 
   generateSearchForm = () => {
     const { getFieldDecorator } = this.props.form;
@@ -84,19 +84,23 @@ class StandardTable extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem>
-              {getFieldDecorator('searchStr')(
-                <Search placeholder="请输入搜索内容" />
-              )}
+              {getFieldDecorator('searchStr')(<Search placeholder="请输入搜索内容" />)}
             </FormItem>
           </Col>
         </Row>
       </Form>
     );
-  }
+  };
 
   render() {
-    const { selectedRowKeys, needTotalList } = this.state;
-    const { data: { list, pagination }, loading, columns, rowKey, multiple = true } = this.props;
+    const { selectedRowKeys } = this.state;
+    const {
+      data: { list, pagination },
+      loading,
+      columns,
+      rowKey,
+      multiple = true,
+    } = this.props;
     const searchForm = this.generateSearchForm();
 
     const paginationProps = {
@@ -115,7 +119,7 @@ class StandardTable extends PureComponent {
 
     return (
       <div className={styles.standardTable}>
-        { searchForm }
+        {searchForm}
         <Table
           loading={loading}
           rowKey={rowKey || 'key'}

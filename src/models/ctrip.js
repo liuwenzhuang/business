@@ -1,54 +1,53 @@
-import { getOrgs, getUserTable, getDeptTable, updateDeptAuth, updateUserAuth } from '../services/api';
+import {
+  getOrgs,
+  getUserTable,
+  getDeptTable,
+  updateDeptAuth,
+  updateUserAuth,
+} from '../services/ctrip';
 
 export default {
-
   namespace: 'ctrip',
 
   state: {
     orgs: [],
     deptTable: {
       list: [],
-      pagination: {}
+      pagination: {},
     },
     userTable: {
       list: [],
-      pagination: {}
+      pagination: {},
     },
     authorizedUserTable: {
       list: [],
-      pagination: {}
+      pagination: {},
     },
-    modalVisible: false
+    modalVisible: false,
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {  // eslint-disable-line
+    setup({ dispatch, history }) {
+      // eslint-disable-line
       return history.listen(({ pathname, search }) => {
         if (pathname === '/ctripsecondauthorized') {
           dispatch({
             type: 'queryOrgs',
-            payload: {}
+            payload: {},
           });
           dispatch({
             type: 'queryDeptTable',
             payload: {
               current: 1,
-              pageSize: 10
-            }
+              pageSize: 10,
+            },
           });
           dispatch({
             type: 'queryUserTable',
             payload: {
               current: 1,
-              pageSize: 10
-            }
-          });
-          dispatch({
-            type: 'queryAuthorizerTable',
-            payload: {
-              current: 1,
-              pageSize: 10
-            }
+              pageSize: 10,
+            },
           });
         }
       });
@@ -57,75 +56,75 @@ export default {
 
   effects: {
     *queryOrgs({ payload }, { call, put }) {
-      const response = yield call(getOrgs, payload);
+      const response = yield call(getOrgs);
       const { success } = response;
-      if(!success) return;
+      if (!success) return;
       yield put({
         type: 'save',
-        payload: { orgs: response.information }
+        payload: { orgs: response.information },
       });
     },
 
     *queryDeptTable({ payload }, { call, put }) {
       const response = yield call(getDeptTable, payload);
       const { success } = response;
-      if(!success) return;
+      if (!success) return;
       yield put({
         type: 'save',
         payload: {
           deptTable: {
             list: response.information,
-            pagination: response.pagination
-          }
-        }
+            pagination: response.pagination,
+          },
+        },
       });
     },
 
     *queryUserTable({ payload }, { call, put }) {
       const response = yield call(getUserTable, payload);
       const { success } = response;
-      if(!success) return;
+      if (!success) return;
       yield put({
         type: 'save',
         payload: {
           userTable: {
             list: response.information,
-            pagination: response.pagination
-          }
-        }
+            pagination: response.pagination,
+          },
+        },
       });
     },
 
     *queryAuthorizerTable({ payload }, { call, put }) {
       const response = yield call(getUserTable, payload);
       const { success } = response;
-      if(!success) return;
+      if (!success) return;
       yield put({
         type: 'save',
         payload: {
           authorizedUserTable: {
             list: response.information,
-            pagination: response.pagination
-          }
-        }
+            pagination: response.pagination,
+          },
+        },
       });
     },
 
     *updatedeptauth({ payload }, { call, put }) {
       const response = yield call(updateDeptAuth, payload);
       const { success } = response;
-      if(!success) throw response;
+      if (!success) throw response;
       yield put({
-        type: 'hideModal'
+        type: 'hideModal',
       });
     },
 
     *updateuserauth({ payload }, { call, put }) {
       const response = yield call(updateUserAuth, payload);
       const { success } = response;
-      if(!success) throw response;
+      if (!success) throw response;
       yield put({
-        type: 'hideModal'
+        type: 'hideModal',
       });
     },
   },
@@ -139,19 +138,17 @@ export default {
     },
 
     hideModal(state) {
-      console.log('hide modal');
       return {
         ...state,
-        modalVisible: false
-      }
+        modalVisible: false,
+      };
     },
 
     showModal(state) {
-      console.log('show modal');
       return {
         ...state,
-        modalVisible: true
-      }
-    }
+        modalVisible: true,
+      };
+    },
   },
 };

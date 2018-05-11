@@ -34,15 +34,16 @@ function checkStatus(response) {
 }
 
 function checkCode(response) {
-  if (response.code == '0') {
+  if (response.code === '0' || response.code === 0) {
     return {
       ...response,
-      success: true
+      success: true,
     };
   }
-  const errortext = typeof response['information'] === 'string' ? response['information'] : '请求失败';
+  const errortext =
+    typeof response['information'] === 'string' ? response['information'] : '请求失败';
   notification.error({
-    message: `请求错误失败`,
+    message: `请求失败`,
     description: errortext,
   });
   const error = new Error(errortext);
@@ -90,7 +91,7 @@ export default function request(url, options) {
     .catch(err => {
       return {
         success: false,
-        information: err.message
+        information: err.message,
       };
     });
 }

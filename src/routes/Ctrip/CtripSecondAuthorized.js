@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Tabs, Select, Table, Button, Form, Row, Col, Input, Modal } from 'antd';
 import FooterToolbar from '../../components/FooterToolbar';
-import classNames from 'classnames';
 import Constant from './Constants';
 import styles from './index.less';
 import StandardTable from '../../components/StandardTable';
@@ -17,9 +16,10 @@ class CtripSecondAuthorized extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabsKey: Constant.SETTYPES.DEPT,  // 按部门 or 按用户
-      orgpk: '',                        // 选择的组织pk
-      selectedRowKeys: [],              // 多选的表格项
+      tabsKey: Constant.SETTYPES.DEPT, // 按部门 or 按用户
+      orgpk: '', // 选择的组织pk
+      selectedRowKeys: [], // 多选的表格项
+      selectedRows: [],
     };
     this.handleOrgChange = this.handleOrgChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
@@ -36,7 +36,7 @@ class CtripSecondAuthorized extends Component {
     this.handleModalTableChange = this.handleModalTableChange.bind(this);
     this.handleModalTableSearch = this.handleModalTableSearch.bind(this);
 
-    this.singleSelectRow = null;  // 点击某行修改按钮时，保存此行数据
+    this.singleSelectRow = null; // 点击某行修改按钮时，保存此行数据
     this.singleAuthorize = false; // 单/多 选修改授权人
   }
 
@@ -45,11 +45,14 @@ class CtripSecondAuthorized extends Component {
    * @param {*} value
    */
   handleOrgChange(value) {
-    this.setState({
-      orgpk: value
-    }, () => {
-      this.handleSearch();
-    });
+    this.setState(
+      {
+        orgpk: value,
+      },
+      () => {
+        this.handleSearch();
+      }
+    );
   }
 
   /**
@@ -67,15 +70,16 @@ class CtripSecondAuthorized extends Component {
       const { orgpk } = this.state;
       const { dispatch } = this.props;
       const { tabsKey } = this.state;
-      let type = 'ctrip/' + (tabsKey === Constant.SETTYPES.DEPT ? 'queryDeptTable' : 'queryUserTable');
+      let type =
+        'ctrip/' + (tabsKey === Constant.SETTYPES.DEPT ? 'queryDeptTable' : 'queryUserTable');
       dispatch({
         type,
         payload: {
           condition: searchStr,
           orgpk,
           current: 1,
-          pageSize: 10
-        }
+          pageSize: 10,
+        },
       });
     });
   }
@@ -92,11 +96,17 @@ class CtripSecondAuthorized extends Component {
         placeholder="组织"
         optionFilterProp="children"
         onChange={this.handleOrgChange}
-        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-      >
-        {
-          orgs.map(org => <Option key={org['id']} value={org['id']}>{org['name']}</Option>)
+        filterOption={(input, option) =>
+          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
+      >
+        {orgs &&
+          orgs.length &&
+          orgs.map(org => (
+            <Option key={org['pk']} value={org['pk']}>
+              {org['name']}
+            </Option>
+          ))}
       </Select>
     );
   }
@@ -108,9 +118,7 @@ class CtripSecondAuthorized extends Component {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem>
-              {getFieldDecorator('searchStr')(
-                <Search placeholder="请输入搜索内容" />
-              )}
+              {getFieldDecorator('searchStr')(<Search placeholder="请输入搜索内容" />)}
             </FormItem>
           </Col>
         </Row>
@@ -125,8 +133,18 @@ class CtripSecondAuthorized extends Component {
   handleOperation(record) {
     this.singleSelectRow = record;
     this.singleAuthorize = true;
-    this.props.dispatch({
-      type: 'ctrip/showModal'
+    const { dispatch } = this.props;
+    const { orgpk } = this.state;
+    dispatch({
+      type: 'ctrip/showModal',
+    });
+    dispatch({
+      type: 'ctrip/queryAuthorizerTable',
+      payload: {
+        current: 1,
+        pageSize: 10,
+        orgpk,
+      },
     });
   }
 
@@ -134,15 +152,16 @@ class CtripSecondAuthorized extends Component {
    * 选择表格项
    * @param {*} selectedRowKeys
    */
-  handleSelectChange(selectedRowKeys) {
-    this.setState({ selectedRowKeys });
+  handleSelectChange(selectedRowKeys, selectedRows) {
+    this.setState({ selectedRowKeys, selectedRows });
   }
 
   handleTableChange(pagination, filters, sorter) {
     const { current, pageSize } = pagination;
     const { dispatch, form } = this.props;
     const { tabsKey, orgpk } = this.state;
-    let type = 'ctrip/' + (tabsKey === Constant.SETTYPES.DEPT ? 'queryDeptTable' : 'queryUserTable');
+    let type =
+      'ctrip/' + (tabsKey === Constant.SETTYPES.DEPT ? 'queryDeptTable' : 'queryUserTable');
     let searchStr = form.getFieldValue('searchStr');
     searchStr = searchStr && searchStr.trim();
     dispatch({
@@ -151,8 +170,8 @@ class CtripSecondAuthorized extends Component {
         current,
         pageSize,
         condition: searchStr,
-        orgpk
-      }
+        orgpk,
+      },
     });
   }
 
@@ -188,7 +207,12 @@ class CtripSecondAuthorized extends Component {
     }
     columns[columns.length - 1]['render'] = (text, record) => (
       <span>
-        <a href="javascript:void(0);" onClick={this.handleOperation.bind(this, record)}>修改</a>
+        {
+          // eslint-disable-next-line
+          <a href="javascript:void(0);" onClick={this.handleOperation.bind(this, record)}>
+            修改
+          </a>
+        }
       </span>
     );
     pagination = {
@@ -204,8 +228,7 @@ class CtripSecondAuthorized extends Component {
         rowSelection={rowSelection}
         pagination={pagination}
         onChange={this.handleTableChange}
-      >
-      </Table>
+      />
     );
   }
 
@@ -214,9 +237,16 @@ class CtripSecondAuthorized extends Component {
    * @param {*} activeKey
    */
   handleTabsChange(activeKey) {
-    this.setState({
-      tabsKey: activeKey
-    });
+    this.setState(
+      {
+        tabsKey: activeKey,
+        selectedRowKeys: [],
+        selectedRows: [],
+      },
+      () => {
+        this.handleSearch();
+      }
+    );
   }
 
   /**
@@ -228,14 +258,23 @@ class CtripSecondAuthorized extends Component {
       Modal.info({
         title: '提示',
         content: '请选择部门或人员信息后进行操作',
-        onOk() { }
+        onOk() {},
       });
       return;
     }
-    this.singleAuthorize = true;
-    this.props.dispatch({
+    this.singleAuthorize = false;
+    const { dispatch } = this.props;
+    const { orgpk } = this.state;
+    dispatch({
       type: 'ctrip/showModal',
-      payload: {}
+    });
+    dispatch({
+      type: 'ctrip/queryAuthorizerTable',
+      payload: {
+        current: 1,
+        pageSize: 10,
+        orgpk,
+      },
     });
   }
 
@@ -247,7 +286,12 @@ class CtripSecondAuthorized extends Component {
     let columns = Constant.TABLESETTINGS.AUTHORIZER.COLUMNS;
     columns[columns.length - 1]['render'] = (text, record) => (
       <span>
-        <a href="javascript:void(0);" onClick={this.setAsAuthorizer.bind(this, record)}>修改</a>
+        {
+          // eslint-disable-next-line
+          <a href="javascript:void(0);" onClick={this.setAsAuthorizer.bind(this, record)}>
+            设为二次授权人
+          </a>
+        }
       </span>
     );
     return (
@@ -255,7 +299,7 @@ class CtripSecondAuthorized extends Component {
         title="选择二次授权人"
         wrapClassName="vertical-center-modal"
         visible={modalVisible}
-        width={"90%"}
+        width={'90%'}
         footer={null}
         onCancel={this.hideModal}
       >
@@ -288,9 +332,9 @@ class CtripSecondAuthorized extends Component {
         current,
         pageSize,
         orgpk,
-        condition: searchStr
-      }
-    })
+        condition: searchStr,
+      },
+    });
   }
 
   /**
@@ -306,34 +350,31 @@ class CtripSecondAuthorized extends Component {
         current: 1,
         pageSize: 10,
         orgpk,
-        condition: searchStr
-      }
+        condition: searchStr,
+      },
     });
   }
 
   setAsAuthorizer(record) {
-    const { tabsKey, selectedRowKeys, orgpk } = this.state;
+    const { tabsKey, selectedRows, orgpk } = this.state;
     const { dispatch } = this.props;
     let type = '';
-    let refreshType = '';
     let payload = {};
     switch (tabsKey) {
       case Constant.SETTYPES.DEPT:
         type = 'ctrip/updatedeptauth';
-        refreshType = 'ctrip/queryDeptTable';
         payload = {
-          depts: this.singleAuthorize ? [this.singleSelectRow] : selectedRowKeys,
+          depts: this.singleAuthorize ? [this.singleSelectRow] : selectedRows,
           ...record,
-          orgpk
+          orgpk,
         };
         break;
       case Constant.SETTYPES.USER:
         type = 'ctrip/updateuserauth';
-        refreshType = 'ctrip/queryUserTable';
         payload = {
-          users: this.singleAuthorize ? [this.singleSelectRow] : selectedRowKeys,
+          users: this.singleAuthorize ? [this.singleSelectRow] : selectedRows,
           ...record,
-          orgpk
+          orgpk,
         };
         break;
       default:
@@ -341,30 +382,26 @@ class CtripSecondAuthorized extends Component {
     }
     dispatch({
       type,
-      payload
-    }).then(() => {
-      Modal.info({
-        title: '修改成功',
-        content: '修改授权人成功',
-        onOk: () => {
-          this.hideModal();
-          dispatch({
-            type: refreshType,
-            payload: {
-              current: 1,
-              pageSize: 10
-            }
-          });
-        },
+      payload,
+    })
+      .then(() => {
+        Modal.info({
+          title: '修改成功',
+          content: '修改授权人成功',
+          onOk: () => {
+            this.hideModal();
+            this.handleSearch();
+          },
+        });
+      })
+      .catch(err => {
+        console.error(err);
       });
-    }).catch(err => {
-      console.error(err);
-    });
   }
 
   hideModal() {
     this.props.dispatch({
-      type: 'ctrip/hideModal'
+      type: 'ctrip/hideModal',
     });
   }
 
@@ -391,12 +428,19 @@ class CtripSecondAuthorized extends Component {
           </TabPane>
         </Tabs>
         <FooterToolbar>
-          <Button type='primary' onClick={this.handleBatchModify}>批量修改</Button>
+          <Button type="primary" onClick={this.handleBatchModify}>
+            批量修改
+          </Button>
         </FooterToolbar>
         {modalTableContent}
-        <Loader fullScreen spinning={loading.effects['ctrip/updatedeptauth'] || loading.effects['ctrip/updateuserauth']}></Loader>
+        <Loader
+          fullScreen
+          spinning={
+            loading.effects['ctrip/updatedeptauth'] || loading.effects['ctrip/updateuserauth']
+          }
+        />
       </div>
-    )
+    );
   }
 }
 

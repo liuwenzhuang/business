@@ -1,12 +1,10 @@
 const qs = require('qs');
 const Mock = require('mockjs');
 
-import { getUrlParams } from '../utils/utils';
-
 let orgs = Mock.mock({
   'list|30-40': [
     {
-      id: '@id',
+      pk: '@id',
       name: '@name',
     }
   ]
@@ -42,10 +40,8 @@ let userauth = Mock.mock({
   ]
 })
 
-console.log(orgs);
-
 module.exports = {
-  [`POST /ctrip/orginfo`](req, res) {
+  [`GET /ctrip/orginfo`](req, res) {
     res.status(200).json({
       code: '0',
       information: orgs.list,
