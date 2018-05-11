@@ -54,7 +54,7 @@ class CtripGroup extends Component {
   queryGroups = () => {
     const { dispatch } = this.props;
     dispatch(actionCreator('ctripGroup/queryGroups'));
-  }
+  };
 
   /**
    * 修改客户经理
@@ -277,7 +277,7 @@ class CtripGroup extends Component {
         actionCreator('ctripGroup/effectPostWithSucessModal', {
           gName: groupName,
           gNote: groupNote,
-          url: Api.CTRIPGROUP.ADD_GROUP
+          url: Api.CTRIPGROUP.ADD_GROUP,
         })
       ).then(data => {
         this.setState({ isAddModal: false });

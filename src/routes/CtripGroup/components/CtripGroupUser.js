@@ -582,8 +582,8 @@ class CtripGroupUser extends PureComponent {
               <span>
                 <Divider type="vertical" />
                 {
-                  // eslint-disable-next-line
-                  <a href="javascript:void(0);"
+                  <a
+                    href="javascript:void(0);" // eslint-disable-line
                     onClick={this.handleViewNote.bind(this, record.note)}
                   >
                     查看备注
