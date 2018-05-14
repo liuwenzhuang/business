@@ -28,6 +28,11 @@ const Routers = function({ history, app }) {
       models: () => [import('./models/ctripGroup')],
       component: () => import('./routes/CtripGroup'),
     },
+    {
+      path: '/openservices',
+      models: () => [import('./models/service')],
+      component: () => import('./routes/OpenServices'),
+    },
   ];
 
   return (

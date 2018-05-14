@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend';
 import { Modal } from 'antd';
-import { commonPost } from '../services/api';
+import { commonPost, commonGet } from '../services/api';
 
 const model = {
   reducers: {
@@ -28,7 +28,16 @@ const pageModel = modelExtend(model, {
   effects: {
     *effectPostWithSucessModal({ payload }, { call, put }) {
       const { success, information } = yield call(commonPost, payload);
-      console.log(success, information);
+      if (!success) throw information;
+      Modal.info({
+        title: '提示',
+        content: information,
+      });
+      return information;
+    },
+
+    *effectGetWithModal({ payload }, { call, put }) {
+      const { success, information } = yield call(commonGet, payload);
       if (!success) throw information;
       Modal.info({
         title: '提示',

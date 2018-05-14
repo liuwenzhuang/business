@@ -294,6 +294,7 @@ class CtripGroup extends Component {
     const { isAddModal } = this.state;
     const {
       form: { getFieldDecorator },
+      loading,
     } = this.props;
     const formItemLayout = {
       labelCol: { span: 4 },
@@ -304,6 +305,7 @@ class CtripGroup extends Component {
         visible={isAddModal}
         title="新增分组"
         destroyOnClose={true}
+        confirmLoading={loading.effects['ctripGroup/effectPostWithSucessModal']}
         onOk={this.handleAddGroup}
         onCancel={this.handleCancelAddGroup}
       >
@@ -346,7 +348,7 @@ class CtripGroup extends Component {
           buttonText="客户经理维护"
           onConfirm={this.handleConfirmManager}
           editable={isManagerEditable}
-          defaultValue={manager.info}
+          defaultValue={manager ? manager.info : ''}
         />
         <Table
           columns={columns}
@@ -357,7 +359,11 @@ class CtripGroup extends Component {
           loading={loading.effects['ctripGroup/queryGroups']}
         />
         <FooterToolbar>
-          <Button type="primary" onClick={this.handleDelete}>
+          <Button
+            type="primary"
+            onClick={this.handleDelete}
+            loading={loading.effects['ctripGroup/effectPostWithSucessModal']}
+          >
             删除
           </Button>
           <Button type="primary" onClick={this.handleAdd}>

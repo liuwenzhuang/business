@@ -9,6 +9,7 @@ const authorEmail = 'liuwzhb@yonyou.com';
 
 const ctripApiPrefix = '/ctrip';
 const ctripGroupPrefix = '/ctrip/ctripGroup';
+const smeCtripPrefix = '/smeCtrip';
 
 const Api = {
   CTRIP: {
@@ -35,6 +36,15 @@ const Api = {
     ADJUST_GROUP: `${ctripApiPrefix}/ctripGroupMember/updategid`,
     DELETE_GROUP_USERS: `${ctripApiPrefix}/ctripGroupMember/delgroupmembers`,
     EXPORT: `${ctripApiPrefix}/ctripGroupMember/export`,
+  },
+  SMECTRIP: {
+    IS_OPEN: `${smeCtripPrefix}/isOpen`,
+    REGISTER_COMPANY: `${smeCtripPrefix}/registerCompany`,
+    SSOLOGIN: `${smeCtripPrefix}/ssologin/pc`,
+    SYNC_USERS: `${smeCtripPrefix}/syncUsers`,
+    SYNC_ALL_USERS: `${smeCtripPrefix}/syncAllUsers`,
+    SYNC_DEPT: `${smeCtripPrefix}/syncDept`,
+    SYNC_ALL_DEPT: `${smeCtripPrefix}/syncAllDept`,
   },
 };
 
