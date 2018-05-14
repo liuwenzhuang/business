@@ -45,7 +45,7 @@ class OpenServices extends Component {
   render() {
     const {
       service: { isOpen },
-      loading
+      loading,
     } = this.props;
     const dataSource = [
       {
@@ -100,11 +100,11 @@ class OpenServices extends Component {
         ),
       },
     ];
-  return (
-    <Fragment>
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
-    </Fragment>
-  );
+    return (
+      <Fragment>
+        <Table dataSource={dataSource} columns={columns} pagination={false} />
+      </Fragment>
+    );
   }
 }
 

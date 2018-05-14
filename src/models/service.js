@@ -36,6 +36,6 @@ export default modelExtend(pageModel, {
           payload: { isOpen },
         });
       }
-    }
+    },
   },
 });
