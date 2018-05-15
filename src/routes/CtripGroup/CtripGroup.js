@@ -129,6 +129,7 @@ class CtripGroup extends Component {
     this.setState({
       isUserPage: false,
     });
+    this.queryGroups();
   }
 
   handleEditableCellChange = (value, id, column) => {
