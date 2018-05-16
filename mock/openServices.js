@@ -1,7 +1,3 @@
-const Mock = require('mockjs');
-
-const Random = Mock.Random;
-
 let isOpen = false;
 
 module.exports = {

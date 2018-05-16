@@ -38,8 +38,8 @@ export default {
       COLUMNS: [
         {
           title: '编码',
-          dataIndex: 'userid',
-          key: 'userid',
+          dataIndex: 'pcode',
+          key: 'pcode',
           align: 'right',
           width: '20%',
         },
@@ -74,8 +74,8 @@ export default {
       COLUMNS: [
         {
           title: '编码',
-          dataIndex: 'userid',
-          key: 'userid',
+          dataIndex: 'pcode',
+          key: 'pcode',
           align: 'right',
         },
         {

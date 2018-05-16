@@ -20,8 +20,8 @@ const Routers = function({ history, app }) {
   const routes = [
     {
       path: '/ctripsecondauthorized',
-      models: () => [import('./models/ctrip')],
-      component: () => import('./routes/Ctrip'),
+      models: () => [import('./models/ctripSecondAuthorized')],
+      component: () => import('./routes/CtripSecondAuthorized'),
     },
     {
       path: '/ctripgroup',
@@ -30,7 +30,7 @@ const Routers = function({ history, app }) {
     },
     {
       path: '/openservices',
-      models: () => [import('./models/service')],
+      models: () => [import('./models/openServices')],
       component: () => import('./routes/OpenServices'),
     },
   ];
@@ -64,7 +64,5 @@ Routers.propTypes = {
   history: PropTypes.object,
   app: PropTypes.object,
 };
-
-console.log(Routers);
 
 export default Routers;

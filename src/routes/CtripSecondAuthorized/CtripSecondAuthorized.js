@@ -189,14 +189,17 @@ class CtripSecondAuthorized extends Component {
     let pagination = null;
     let columns = [];
     let loadingIndicator = false;
+    let rowKey = '';
     switch (tabsKey) {
       case Constant.SETTYPES.DEPT:
+        rowKey = 'deptpk';
         columns = Constant.TABLESETTINGS.DEPT.COLUMNS;
         dataSource = deptTable.list;
         pagination = deptTable.pagination;
         loadingIndicator = loading.effects['ctrip/queryDeptTable'];
         break;
       case Constant.SETTYPES.USER:
+        rowKey = 'pcode';
         columns = Constant.TABLESETTINGS.USER.COLUMNS;
         dataSource = userTable.list;
         pagination = userTable.pagination;
@@ -222,6 +225,7 @@ class CtripSecondAuthorized extends Component {
     };
     return (
       <Table
+        rowKey={record => record[rowKey]}
         loading={loadingIndicator}
         columns={columns}
         dataSource={dataSource}
@@ -304,6 +308,7 @@ class CtripSecondAuthorized extends Component {
         onCancel={this.hideModal}
       >
         <StandardTable
+          rowKey={record => record.pcode}
           data={authorizedUserTable}
           columns={columns}
           loading={loading.effects['ctrip/queryAuthorizerTable']}

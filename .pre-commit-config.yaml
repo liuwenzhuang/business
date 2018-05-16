@@ -1,4 +1,0 @@
-    -   repo: git@git.yonyou.com:ybz-lab/ybz_business.git
-        sha: ''  # Use the sha or tag you want to point at
-        hooks:
-        -   id: prettier

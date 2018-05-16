@@ -5,3 +5,6 @@
 **/*.ejs
 **/*.hbs
 package.json
+**/*.eot
+**/*.ttf
+**/*.woff

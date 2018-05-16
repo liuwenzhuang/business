@@ -6,7 +6,7 @@
     "publish_234": "cross-env NODE_ENV=production SERVER_ENV=ybz.yonyoucloud.com roadhog build && scp -r ./dist/* root@10.3.14.230:/server/featureresources/ybz_business && ssh root@10.3.14.230 scp -rp  /server/featureresources/ybz_business root@10.3.14.244:/server/featureresources/ && ssh root@10.3.14.230 docker cp /server/featureresources/ybz_business ybz_nginx:/server/featureresources/ && ssh root@10.3.14.244 docker cp /server/featureresources/ybz_business ybz_nginx:/server/featureresources/",
     "publish_244": "cross-env NODE_ENV=production SERVER_ENV=ybz.yonyoucloud.com roadhog build && scp -r ./dist/* root@10.3.14.230:/server/testresources/ybz_business && ssh root@10.3.14.230 scp -rp  /server/testresources/ybz_business root@10.3.14.244:/server/testresources/ && ssh root@10.3.14.230 docker cp /server/testresources/ybz_business ybz_nginx:/server/testresources/ && ssh root@10.3.14.244 docker cp /server/testresources/ybz_business ybz_nginx:/server/testresources/",
     "lint": "eslint --ext .js src test",
-    "precommit": "npm run lint && npm run prettier",
+    "precommit": "npm run lint",
     "prettier": "prettier --write ./src/**/**/**/*",
     "prettier-watch": "onchange './src/**/*.js' -- prettier --write {{changed}}"
   },
