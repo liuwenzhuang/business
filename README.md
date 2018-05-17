@@ -37,7 +37,7 @@
 
 默认情况下antd使用的是远程阿里云图标，如果想要使用本地图标，可按照下面的步骤：
 
-1.到https://ant.design/docs/spec/download-cn页面下载`Web Font`，下载完成为一zip包，可以将其中内容解压至`src/assets/antd`文件夹中（其他路径也可）。
+1.到[https://ant.design/docs/spec/download-cn](https://ant.design/docs/spec/download-cn)页面下载Web Font，下载完成为一zip包，可以将其中内容解压至`src/assets/antd`文件夹中（其他路径也可）。
 
 2.在[src/themes/default.less`](./src/themes/default.less)添加一行：
 

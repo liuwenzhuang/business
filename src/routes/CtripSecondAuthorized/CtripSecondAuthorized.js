@@ -361,6 +361,13 @@ class CtripSecondAuthorized extends Component {
   }
 
   setAsAuthorizer(record) {
+    if (!record.email) {
+      Modal.error({
+        title: '错误',
+        content: '此用户邮箱为空，不能选择其作为授权人',
+      });
+      return;
+    }
     const { tabsKey, selectedRows, orgpk } = this.state;
     const { dispatch } = this.props;
     let type = '';
