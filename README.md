@@ -44,3 +44,23 @@
 ```less
 @icon-url: '../../../../../src/assets/antd/iconfont'; // 从node_modules/antd/es/style/core/路径开始
 ```
+
+## 添加Redux中间件(Middlewares)
+
+以添加`redux-logger`中间件为例：
+
+```javascript
+// src/index.js
+import createLogger from 'redux-logger';
+const app = dva({
+  onAction: createLogger(),
+});
+```
+
+ > 添加多个中间件时，只需要为`onAction`属性指定数组即可。
+
+## 查阅
+
+ - [dva概念](https://github.com/dvajs/dva/blob/master/docs/Concepts_zh-CN.md)
+ - [dva API](https://github.com/dvajs/dva/blob/master/docs/API_zh-CN.md)
+ - [dva配置方式](https://github.com/sorrycc/roadhog/blob/master/README_zh-cn.md#%E9%85%8D%E7%BD%AE)
