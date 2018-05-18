@@ -2,6 +2,7 @@ const config = {
   theme: "./theme.config.js",
   "hash": true,
   "extraBabelPlugins": [
+    "@babel/plugin-transform-runtime",
     ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": true }]
   ],
   "env": {
