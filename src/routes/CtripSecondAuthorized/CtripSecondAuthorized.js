@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Tabs, Select, Table, Button, Form, Row, Col, Input, Modal } from 'antd';
+import { Tabs, Select, Table, Button, Row, Col, Input, Modal } from 'antd';
 import FooterToolbar from '../../components/FooterToolbar';
 import Constant from './Constants';
 import styles from './index.less';
@@ -9,7 +9,6 @@ import Loader from '../../components/Loader/Loader';
 
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
-const FormItem = Form.Item;
 const Search = Input.Search;
 
 class CtripSecondAuthorized extends Component {
@@ -17,14 +16,14 @@ class CtripSecondAuthorized extends Component {
     super(props);
     this.state = {
       tabsKey: Constant.SETTYPES.DEPT, // 按部门 or 按用户
-      orgpk: '', // 选择的组织pk
       selectedRowKeys: [], // 多选的表格项
       selectedRows: [],
     };
     this.handleOrgChange = this.handleOrgChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+    this.handleHasAuthorizerChange = this.handleHasAuthorizerChange.bind(this);
     this.generateOrgDorpDown = this.generateOrgDorpDown.bind(this);
-    this.generateSearchForm = this.generateSearchForm.bind(this);
+    this.generateFilterContent = this.generateFilterContent.bind(this);
     this.handleOperation = this.handleOperation.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.generateTable = this.generateTable.bind(this);
@@ -36,52 +35,59 @@ class CtripSecondAuthorized extends Component {
     this.handleModalTableChange = this.handleModalTableChange.bind(this);
     this.handleModalTableSearch = this.handleModalTableSearch.bind(this);
 
+    this.orgpk = ''; // 组织下拉框
+    this.condition = ''; // 表格搜素
+    this.hasAuthorizer = ''; // 是否选择了二次授权人下拉框
     this.singleSelectRow = null; // 点击某行修改按钮时，保存此行数据
     this.singleAuthorize = false; // 单/多 选修改授权人
   }
+
+  /**
+   * 根据各种条件查询表格
+   */
+  queryTable = (current = 1, pageSize = 10) => {
+    const { orgpk, condition, hasAuthorizer } = this;
+    const { dispatch } = this.props;
+    const { tabsKey } = this.state;
+    let type =
+      'ctrip/' + (tabsKey === Constant.SETTYPES.DEPT ? 'queryDeptTable' : 'queryUserTable');
+    dispatch({
+      type,
+      payload: {
+        condition,
+        orgpk,
+        current,
+        pageSize,
+        setted: hasAuthorizer,
+      },
+    });
+  };
 
   /**
    * 组织变化事件
    * @param {*} value
    */
   handleOrgChange(value) {
-    this.setState(
-      {
-        orgpk: value,
-      },
-      () => {
-        this.handleSearch();
-      }
-    );
+    this.orgpk = value;
+    this.queryTable();
   }
 
   /**
    * 表格搜索事件
    * @param {} e
    */
-  handleSearch(e) {
-    e && e.preventDefault();
-    const { form } = this.props;
-    form.validateFields((err, fieldsValue) => {
-      if (err) {
-        return;
-      }
-      const { searchStr } = fieldsValue;
-      const { orgpk } = this.state;
-      const { dispatch } = this.props;
-      const { tabsKey } = this.state;
-      let type =
-        'ctrip/' + (tabsKey === Constant.SETTYPES.DEPT ? 'queryDeptTable' : 'queryUserTable');
-      dispatch({
-        type,
-        payload: {
-          condition: searchStr,
-          orgpk,
-          current: 1,
-          pageSize: 10,
-        },
-      });
-    });
+  handleSearch(condition) {
+    this.condition = condition;
+    this.queryTable();
+  }
+
+  /**
+   * 是否已经选择了二次授权人下拉事件
+   * @param {*} value
+   */
+  handleHasAuthorizerChange(value) {
+    this.hasAuthorizer = value;
+    this.queryTable();
   }
 
   /**
@@ -111,18 +117,30 @@ class CtripSecondAuthorized extends Component {
     );
   }
 
-  generateSearchForm() {
-    const { getFieldDecorator } = this.props.form;
+  generateFilterContent() {
     return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem>
-              {getFieldDecorator('searchStr')(<Search placeholder="请输入搜索内容" />)}
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
+      <Row gutter={{ md: 8, lg: 16, xl: 24 }} style={{ marginBottom: 16 }}>
+        <Col md={4} sm={24}>
+          <Search
+            onSearch={this.handleSearch}
+            onChange={e => {
+              this.condition = e.target.value;
+            }}
+            placeholder="请输入搜索内容"
+          />
+        </Col>
+        <Col md={4} sm={24}>
+          <Select
+            onChange={this.handleHasAuthorizerChange}
+            defaultValue={''}
+            style={{ width: '100%' }}
+          >
+            <Option value="">全部</Option>
+            <Option value="1">已设置二次授权人</Option>
+            <Option value="0">未设置二次授权人</Option>
+          </Select>
+        </Col>
+      </Row>
     );
   }
 
@@ -134,7 +152,7 @@ class CtripSecondAuthorized extends Component {
     this.singleSelectRow = record;
     this.singleAuthorize = true;
     const { dispatch } = this.props;
-    const { orgpk } = this.state;
+    const { orgpk } = this;
     dispatch({
       type: 'ctrip/showModal',
     });
@@ -158,21 +176,7 @@ class CtripSecondAuthorized extends Component {
 
   handleTableChange(pagination, filters, sorter) {
     const { current, pageSize } = pagination;
-    const { dispatch, form } = this.props;
-    const { tabsKey, orgpk } = this.state;
-    let type =
-      'ctrip/' + (tabsKey === Constant.SETTYPES.DEPT ? 'queryDeptTable' : 'queryUserTable');
-    let searchStr = form.getFieldValue('searchStr');
-    searchStr = searchStr && searchStr.trim();
-    dispatch({
-      type,
-      payload: {
-        current,
-        pageSize,
-        condition: searchStr,
-        orgpk,
-      },
-    });
+    this.queryTable(current, pageSize);
   }
 
   /**
@@ -241,6 +245,8 @@ class CtripSecondAuthorized extends Component {
    * @param {*} activeKey
    */
   handleTabsChange(activeKey) {
+    this.condition = '';
+    this.hasAuthorizer = '';
     this.setState(
       {
         tabsKey: activeKey,
@@ -248,7 +254,7 @@ class CtripSecondAuthorized extends Component {
         selectedRows: [],
       },
       () => {
-        this.handleSearch();
+        this.queryTable();
       }
     );
   }
@@ -268,7 +274,7 @@ class CtripSecondAuthorized extends Component {
     }
     this.singleAuthorize = false;
     const { dispatch } = this.props;
-    const { orgpk } = this.state;
+    const { orgpk } = this;
     dispatch({
       type: 'ctrip/showModal',
     });
@@ -330,7 +336,7 @@ class CtripSecondAuthorized extends Component {
   handleModalTableChange(pagination, filters, sorter, searchStr = '') {
     const { current, pageSize } = pagination;
     const { dispatch } = this.props;
-    const { orgpk } = this.state;
+    const { orgpk } = this;
     dispatch({
       type: 'ctrip/queryAuthorizerTable',
       payload: {
@@ -348,7 +354,7 @@ class CtripSecondAuthorized extends Component {
    */
   handleModalTableSearch(searchStr = '') {
     const { dispatch } = this.props;
-    const { orgpk } = this.state;
+    const { orgpk } = this;
     dispatch({
       type: 'ctrip/queryAuthorizerTable',
       payload: {
@@ -368,7 +374,8 @@ class CtripSecondAuthorized extends Component {
       });
       return;
     }
-    const { tabsKey, selectedRows, orgpk } = this.state;
+    const { tabsKey, selectedRows } = this.state;
+    const { orgpk } = this;
     const { dispatch } = this.props;
     let type = '';
     let payload = {};
@@ -402,7 +409,7 @@ class CtripSecondAuthorized extends Component {
           content: '修改授权人成功',
           onOk: () => {
             this.hideModal();
-            this.handleSearch();
+            this.queryTable();
           },
         });
       })
@@ -419,7 +426,7 @@ class CtripSecondAuthorized extends Component {
 
   render() {
     const orgDropDown = this.generateOrgDorpDown();
-    const searchForm = this.generateSearchForm();
+    const filterContent = this.generateFilterContent();
     const tableContent = this.generateTable();
     const modalTableContent = this.generateModalTable();
     const { loading } = this.props;
@@ -428,13 +435,13 @@ class CtripSecondAuthorized extends Component {
         <Tabs tabBarExtraContent={orgDropDown} onChange={this.handleTabsChange}>
           <TabPane tab={Constant.TABHEADS.DEPT} key={Constant.SETTYPES.DEPT}>
             <div className={styles.panel}>
-              {searchForm}
+              {filterContent}
               {tableContent}
             </div>
           </TabPane>
           <TabPane tab={Constant.TABHEADS.USER} key={Constant.SETTYPES.USER}>
             <div className={styles.panel}>
-              {searchForm}
+              {filterContent}
               {tableContent}
             </div>
           </TabPane>
@@ -465,4 +472,4 @@ export default connect(({ ctrip, loading, ...rest }) => {
     modalVisible: ctrip.modalVisible,
     loading: loading,
   };
-})(Form.create({})(CtripSecondAuthorized));
+})(CtripSecondAuthorized);
