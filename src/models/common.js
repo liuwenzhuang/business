@@ -23,6 +23,7 @@ const pageModel = modelExtend(model, {
       total: 0,
       pageSize: 10,
     },
+    modalVisible: false,
   },
 
   effects: {
@@ -66,6 +67,21 @@ const pageModel = modelExtend(model, {
           ...state.pagination,
           ...pagination,
         },
+      };
+    },
+
+    showModal(state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+        modalVisible: true,
+      };
+    },
+
+    hideModal(state) {
+      return {
+        ...state,
+        modalVisible: false,
       };
     },
   },
