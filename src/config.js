@@ -46,6 +46,11 @@ const Api = {
     SYNC_DEPT: `${smeCtripPrefix}/syncDept`,
     SYNC_ALL_DEPT: `${smeCtripPrefix}/syncAllDept`,
   },
+  SERVICE: {
+    QUERY: `/brigade/openStateList`,
+    OPEN_RTPNR: `/brigade/open`,
+    RTPNR_SERVER_SET: `/brigade/manageurl`,
+  }
 };
 
 module.exports = {

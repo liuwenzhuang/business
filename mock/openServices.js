@@ -1,17 +1,25 @@
-let isOpen = false;
+const Mock = require('mockjs');
+
+const Random = Mock.Random;
+
+let orgs = [];
+
+for (let i = 0; i < 45; i++) {
+  orgs.push({
+    id: Random.id(),
+    name: `${Random.cword(3, 4)}部`,
+    isOpen: Random.boolean(),
+    key: Random.increment(),
+  });
+}
+
+let isCtripSmeOpen = false;
+let isRtpnrOpen = false;
 
 module.exports = {
-  [`GET /smeCtrip/isOpen`](req, res) {
-    res.status(200).json({
-      code: '0',
-      data: {
-        isOpen,
-      },
-    });
-  },
 
   [`GET /smeCtrip/registerCompany`](req, res) {
-    isOpen = true;
+    isCtripSmeOpen = true;
     res.status(200).json({
       code: '0',
       information: '开通成功',
@@ -39,4 +47,57 @@ module.exports = {
 </html>`)
     );
   },
+
+  [`POST /brigade/open`](req, res) {
+    isRtpnrOpen = true;
+    res.status(200).json({
+      code: '0',
+      data: {
+        id: '3',
+      },
+      information: '开通成功',
+    });
+  },
+
+  [`GET /brigade/openStateList`](req, res) {
+    res.status(200).json({
+      code: 0,
+      data: {
+        ctripSme: {
+          isOpen: isCtripSmeOpen,
+        },
+        rtpnr: {
+          tenantName: '用友网络1',
+          adminPhone: '17778135772',
+          tenantId: 'ft9fbcrw',
+          orgs: [
+            {
+              isOpen: isRtpnrOpen,
+              name: '用友网络科技股份有限公司',
+              id: '0001A210000000003ADC',
+            },
+            {
+              isOpen: !isRtpnrOpen,
+              name: '用友甘肃分公司',
+              id: '0001A210000000003MYP',
+            },
+            {
+              isOpen: isRtpnrOpen,
+              name: '用友能源科技有限公司',
+              id: '0001A210000000003BZ4',
+            },
+          ],
+        },
+      },
+    });
+  },
+
+  [`POST /brigade/manageurl`](req, res) {
+    res.status(200).json({
+      code: 0,
+      data: {
+        url: 'https://baidu.com'
+      }
+    });
+  }
 };
