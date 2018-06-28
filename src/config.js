@@ -47,9 +47,9 @@ const Api = {
     SYNC_ALL_DEPT: `${smeCtripPrefix}/syncAllDept`,
   },
   SERVICE: {
-    QUERY: `/brigade/openStateList`,
-    OPEN_RTPNR: `/brigade/open`,
-    RTPNR_SERVER_SET: `/brigade/manageurl`,
+    QUERY: `/bri/openStateList`,
+    OPEN_RTPNR: `/bri/open`,
+    RTPNR_SERVER_SET: `/bri/manageurl`,
   }
 };
 

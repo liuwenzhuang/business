@@ -48,7 +48,7 @@ module.exports = {
     );
   },
 
-  [`POST /brigade/open`](req, res) {
+  [`POST /bri/open`](req, res) {
     isRtpnrOpen = true;
     res.status(200).json({
       code: '0',
@@ -59,7 +59,7 @@ module.exports = {
     });
   },
 
-  [`GET /brigade/openStateList`](req, res) {
+  [`GET /bri/openStateList`](req, res) {
     res.status(200).json({
       code: 0,
       data: {
@@ -92,7 +92,7 @@ module.exports = {
     });
   },
 
-  [`POST /brigade/manageurl`](req, res) {
+  [`POST /bri/manageurl`](req, res) {
     res.status(200).json({
       code: 0,
       data: {
