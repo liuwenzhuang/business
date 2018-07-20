@@ -33,6 +33,11 @@ const Routers = function({ history, app }) {
       models: () => [import('./models/openServices')],
       component: () => import('./routes/OpenServices'),
     },
+    {
+      path: '/orderscenter',
+      models: () => [import('./models/ordersCenter')],
+      component: () => import('./routes/OrdersCenter'),
+    },
   ];
 
   return (
