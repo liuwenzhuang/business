@@ -13,10 +13,7 @@ const DATA = {
         key: 'reserveDate',
         label: '预定日期',
         type: 'RangePicker',
-        defaultValue: [
-          moment(moment().subtract(1, 'months')),
-          moment(),
-        ],
+        defaultValue: [moment(moment().subtract(1, 'months')), moment()],
       },
       {
         key: 'flyDate',
@@ -24,8 +21,8 @@ const DATA = {
         type: 'RangePicker',
       },
       {
-        key: 'staffID',
-        label: '员工编号',
+        key: 'reservePerson',
+        label: '预订人',
         type: 'Input',
       },
       {
@@ -42,243 +39,343 @@ const DATA = {
         key: 'orderSource',
         label: '订单来源',
         type: 'Select',
-        options: [{
-          label: '携程',
-          value: '1'
-        },{
-          label: '飞猪',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '携程',
+            value: '1',
+          },
+          {
+            label: '飞猪',
+            value: '2',
+          },
+        ],
       },
       {
         key: 'orderStatus',
         label: '订单状态',
         type: 'Select',
-        options: [{
-          label: '已审批',
-          value: '1'
-        },{
-          label: '未审批',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '已审批',
+            value: '1',
+          },
+          {
+            label: '未审批',
+            value: '2',
+          },
+        ],
       },
       {
         key: 'payType',
         label: '支付类型',
         type: 'Select',
-        options: [{
-          label: '支付宝',
-          value: '1'
-        },{
-          label: '网银',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '支付宝',
+            value: '1',
+          },
+          {
+            label: '网银',
+            value: '2',
+          },
+        ],
       },
       {
-        key: 'legType',
-        label: '航段类型',
+        key: 'flightType',
+        label: '航班类型',
         type: 'Select',
-        options: [{
-          label: '直达',
-          value: '1'
-        },{
-          label: '转机',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '国内航班',
+            value: '1',
+          },
+          {
+            label: '国际航班',
+            value: '2',
+          },
+        ],
       },
       {
-        key: 'reimburseStatus',
-        label: '报销状态',
+        key: 'payMode',
+        label: '支付方式',
         type: 'Select',
-        options: [{
-          label: '已审批',
-          value: '1'
-        },{
-          label: '驳回',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '网银',
+            value: '1',
+          },
+          {
+            label: '支付宝',
+            value: '2',
+          },
+        ],
       },
       {
-        key: 'airlineCompany',
-        label: '航空公司',
-        type: 'Select',
-        options: [{
-          label: '南航',
-          value: '1'
-        },{
-          label: '国航',
-          value: '2'
-        }]
+        key: 'orderID',
+        label: '订单号',
+        type: 'Inputz',
       },
     ],
     COLUMNS: [
       {
-        title: '订单来源',
-        dataIndex: 'orderSource',
+        title: '预定来源',
+        dataIndex: 'reserveSource',
+        checked: true,
+      },
+      {
+        title: '订单类型',
+        dataIndex: 'ordertype',
+        checked: false,
+      },
+      {
+        title: '原单号',
+        dataIndex: 'originalOrderNO',
+        checked: true,
       },
       {
         title: '订单号',
         dataIndex: 'orderID',
+        checked: true,
       },
       {
-        title: '持卡人',
-        dataIndex: 'cardHolder',
+        title: '预订人',
+        dataIndex: 'reservePerson',
+        checked: true,
       },
       {
         title: '员工编号',
         dataIndex: 'staffID',
+        checked: true,
       },
       {
-        title: '出票日期',
-        dataIndex: 'draftDate',
+        title: '乘机人',
+        dataIndex: 'passenger',
+        checked: true,
+      },
+      {
+        title: '乘机人职级',
+        dataIndex: 'passengerRank',
+        checked: true,
       },
       {
         title: '航班类型',
         dataIndex: 'flightType',
+        checked: true,
       },
       {
-        title: '乘客姓名',
-        dataIndex: 'passengerName',
-      },
-      {
-        title: '航线',
-        dataIndex: 'airline',
-      },
-      {
-        title: '仓位',
-        dataIndex: 'shippingSpace',
-      },
-      {
-        title: '折扣',
-        dataIndex: 'discount',
-      },
-      {
-        title: '订单状态',
-        dataIndex: 'orderStatus',
-      },
-      {
-        title: '票号',
-        dataIndex: 'ticketNO',
-      },
-      {
-        title: '成交净价',
-        dataIndex: 'dealNetPrice',
-      },
-      {
-        title: '保险费',
-        dataIndex: 'premium',
-      },
-      {
-        title: '送票费',
-        dataIndex: 'ticketDeliveryCharge',
-      },
-      {
-        title: '民航基金/税',
-        dataIndex: 'fundOrTax',
-      },
-      {
-        title: '燃油费',
-        dataIndex: 'fuelCharge',
-      },
-      {
-        title: '退票费',
-        dataIndex: 'refundCharge',
-      },
-      {
-        title: '服务费',
-        dataIndex: 'serviceCharge',
-      },
-      {
-        title: '改签费',
-        dataIndex: 'changeCharge',
-      },
-      {
-        title: '退票服务费',
-        dataIndex: 'refundServiceCharge',
-      },
-      {
-        title: '改签服务费',
-        dataIndex: 'changeServiceCharge',
-      },
-      {
-        title: '结算币种',
-        dataIndex: 'settlementCurrency',
-      },
-      {
-        title: '实收实付',
-        dataIndex: 'indeedReceiveAndPay',
-      },
-      {
-        title: '张数',
-        dataIndex: 'ticketAmount',
+        title: '航程',
+        dataIndex: 'flightRange',
+        checked: true,
       },
       {
         title: '航空公司',
         dataIndex: 'airlineCompany',
-      },
-      {
-        title: '支付方式',
-        dataIndex: 'payType',
-      },
-      {
-        title: '机票类型',
-        dataIndex: 'ticketType',
-      },
-      {
-        title: '预定方式',
-        dataIndex: 'reserveType',
-      },
-      {
-        title: '未预定最低价原因',
-        dataIndex: 'reasonForReserveHigherPrice',
-      },
-      {
-        title: '最低价',
-        dataIndex: 'lowestPrice',
-      },
-      {
-        title: '提前预定天数',
-        dataIndex: 'aheadReserveDays',
-      },
-      {
-        title: '预定时间',
-        dataIndex: 'reserveDate',
-      },
-      {
-        title: '起飞时间',
-        dataIndex: 'flyTime',
-      },
-      {
-        title: '到达时间',
-        dataIndex: 'arrivalTime',
+        checked: true,
       },
       {
         title: '航班号',
         dataIndex: 'flightNO',
+        checked: true,
       },
       {
-        title: '改签后航班',
-        dataIndex: 'flightNOAfterChange',
+        title: '舱位级别',
+        dataIndex: 'spaceLevel',
+        checked: true,
       },
       {
-        title: '改签后起飞时间',
-        dataIndex: 'arrivalTimeAfterChange',
+        title: '最低价',
+        dataIndex: 'lowestPrice',
+        checked: true,
+      },
+      {
+        title: '全价',
+        dataIndex: 'fullPrice',
+        checked: true,
+      },
+      {
+        title: '折扣',
+        dataIndex: 'discount',
+        checked: true,
+      },
+      {
+        title: '票面价',
+        dataIndex: 'ticketPrice',
+        checked: true,
+      },
+      {
+        title: '机建+燃油',
+        dataIndex: 'builtAircraftAndFuel',
+        checked: true,
+      },
+      {
+        title: '保险',
+        dataIndex: 'premium',
+        checked: false,
+      },
+      {
+        title: '送票费',
+        dataIndex: 'ticketDeliveryCharge',
+        checked: false,
+      },
+      {
+        title: '服务费',
+        dataIndex: 'serviceCharge',
+        checked: false,
+      },
+      {
+        title: '绑定服务费',
+        dataIndex: 'bindServiceCharge',
+        checked: false,
+      },
+      {
+        title: '改签费',
+        dataIndex: 'changeCharge',
+        checked: true,
+      },
+      {
+        title: '退票费',
+        dataIndex: 'refundCharge',
+        checked: true,
+      },
+      {
+        title: '结算币种',
+        dataIndex: 'settlementCurrency',
+        checked: false,
+      },
+      {
+        title: '实付金额',
+        dataIndex: 'indeedPay',
+        checked: true,
+      },
+      {
+        title: '支付方式',
+        dataIndex: 'payType',
+        checked: true,
+      },
+      {
+        title: '预定方式',
+        dataIndex: 'reserveType',
+        checked: true,
+      },
+      {
+        title: '机票类型',
+        dataIndex: 'ticketType',
+        checked: true,
+      },
+      {
+        title: '提前预定天数',
+        dataIndex: 'aheadReserveDays',
+        checked: true,
+      },
+      {
+        title: '预定时间',
+        dataIndex: 'reserveDate',
+        checked: true,
+      },
+      {
+        title: '起飞时间',
+        dataIndex: 'flyTime',
+        checked: true,
+      },
+      {
+        title: '到达时间',
+        dataIndex: 'arrivalTime',
+        checked: true,
+      },
+      {
+        title: '未提前预定原因',
+        dataIndex: 'reasonForLaterReserve',
+        checked: false,
+      },
+      {
+        title: '未预定最低价原因',
+        dataIndex: 'reasonForReserveHigherPrice',
+        checked: true,
+      },
+      {
+        title: '溢价预定原因',
+        dataIndex: 'reasonForPremiumReserve',
+        checked: false,
       },
       {
         title: '部门1',
         dataIndex: 'dept1',
+        checked: true,
+      },
+      {
+        title: '部门2',
+        dataIndex: 'dept2',
+        checked: false,
+      },
+      {
+        title: '部门3',
+        dataIndex: 'dept3',
+        checked: false,
       },
       {
         title: '成本中心1',
         dataIndex: 'costCenter1',
+        checked: true,
+      },
+      {
+        title: '成本中心2',
+        dataIndex: 'costCenter2',
+        checked: false,
+      },
+      {
+        title: '成本中心3',
+        dataIndex: 'costCenter3',
+        checked: false,
       },
       {
         title: '关联行程号',
         dataIndex: 'relatedJourneyNO',
+        checked: true,
+      },
+      {
+        title: '关联申请号',
+        dataIndex: 'relatedApplyNO',
+        checked: false,
+      },
+      {
+        title: '授权状态',
+        dataIndex: 'authorizationStatus',
+        checked: false,
       },
       {
         title: '报销状态',
         dataIndex: 'reimburseStatus',
+        checked: true,
+      },
+      {
+        title: '备注',
+        dataIndex: 'note',
+        checked: false,
+      },
+      {
+        title: '自定义字段1',
+        dataIndex: 'def1',
+        checked: false,
+      },
+      {
+        title: '自定义字段2',
+        dataIndex: 'def2',
+        checked: false,
+      },
+      {
+        title: '自定义字段3',
+        dataIndex: 'def3',
+        checked: false,
+      },
+      {
+        title: '自定义字段4',
+        dataIndex: 'def4',
+        checked: false,
+      },
+      {
+        title: '自定义字段5',
+        dataIndex: 'def5',
+        checked: false,
       },
     ],
   },
@@ -288,10 +385,7 @@ const DATA = {
         key: 'reserveDate',
         label: '预定日期',
         type: 'RangePicker',
-        defaultValue: [
-          moment(),
-          moment(moment().add(1, 'months'))
-        ],
+        defaultValue: [moment(), moment(moment().add(1, 'months'))],
       },
       {
         key: 'checkInDate',
@@ -317,69 +411,84 @@ const DATA = {
         key: 'orderSource',
         label: '订单来源',
         type: 'Select',
-        options: [{
-          label: '携程',
-          value: '1'
-        },{
-          label: '华住',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '携程',
+            value: '1',
+          },
+          {
+            label: '华住',
+            value: '2',
+          },
+        ],
       },
       {
         key: 'orderStatus',
         label: '订单状态',
         type: 'Select',
-        options: [{
-          label: '已审批',
-          value: '1'
-        },{
-          label: '未审批',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '已审批',
+            value: '1',
+          },
+          {
+            label: '未审批',
+            value: '2',
+          },
+        ],
       },
       {
         key: 'payType',
         label: '支付类型',
         type: 'Select',
-        options: [{
-          label: '支付宝',
-          value: '1'
-        },{
-          label: '网银',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '支付宝',
+            value: '1',
+          },
+          {
+            label: '网银',
+            value: '2',
+          },
+        ],
       },
       {
         key: 'hotelType',
         label: '酒店类型',
         type: 'Select',
-        options: [{
-          label: '5星',
-          value: '1'
-        },{
-          label: '4星',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '5星',
+            value: '1',
+          },
+          {
+            label: '4星',
+            value: '2',
+          },
+        ],
       },
       {
         key: 'reimburseStatus',
         label: '报销状态',
         type: 'Select',
-        options: [{
-          label: '已审批',
-          value: '1'
-        },{
-          label: '驳回',
-          value: '2'
-        }]
+        options: [
+          {
+            label: '已审批',
+            value: '1',
+          },
+          {
+            label: '驳回',
+            value: '2',
+          },
+        ],
       },
       {
         key: 'checkInCity',
         label: '入住城市',
-        type: 'Input'
+        type: 'Input',
       },
     ],
-  }
+  },
 };
 
 export { PLANE, HOTEL, TRAIN, CAR, OTHER, DATA };

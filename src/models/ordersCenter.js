@@ -11,7 +11,7 @@ export default modelExtend(pageModel, {
   state: {
     isSearchCardExpand: true,
     searchTypes: [...DATA[PLANE]['SEARCH_TYPES']],
-    columns: DATA[PLANE]['COLUMNS'],
+    columns: [...DATA[PLANE]['COLUMNS']],
   },
 
   subscriptions: {
