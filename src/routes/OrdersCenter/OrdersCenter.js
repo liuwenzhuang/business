@@ -32,12 +32,16 @@ const ORDER_TYPES = [
 ];
 
 const OrdersCenter = ({ dispatch, ordersCenter, loading }) => {
-  const { isSearchCardExpand, searchTypes, columns, list, pagination, modalVisible } = ordersCenter;
+  const { type, isSearchCardExpand, searchTypes, columns, list, pagination, modalVisible } = ordersCenter;
 
   const handleTabsChange = key => {
     dispatch({
       type: 'ordersCenter/updateState',
-      payload: { searchTypes: DATA[key]['SEARCH_TYPES'] },
+      payload: {
+        type: key,
+        searchTypes: [...DATA[key]['SEARCH_TYPES']],
+        columns: [...DATA[key]['COLUMNS']],
+      },
     });
   };
 
@@ -68,6 +72,7 @@ const OrdersCenter = ({ dispatch, ordersCenter, loading }) => {
     columns: [...columns].filter(item => item.checked),
     list,
     pagination,
+    loading: loading.effects['ordersCenter/query'],
     onDownload() {
       console.log('download start');
     },
@@ -109,11 +114,11 @@ const OrdersCenter = ({ dispatch, ordersCenter, loading }) => {
             <TabPane tab={tab} key={key}>
               <QueryCard type={key} {...queryCardProps} />
               <ResultTable {...tableProps} />
-              <ColumnsModal {...modalProps} />
             </TabPane>
           );
         })}
       </Tabs>
+      <ColumnsModal {...modalProps} key={type} />
     </div>
   );
 };

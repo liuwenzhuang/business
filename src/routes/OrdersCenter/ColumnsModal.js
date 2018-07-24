@@ -7,9 +7,8 @@ const CheckboxGroup = Checkbox.Group;
 class ColumnsModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { columns } = props;
     this.state = {
-      defaultCheckedList: [...columns].filter(item => item.checked).map(item => item.dataIndex),
+      defaultCheckedList: [...props.columns].filter(item => item.checked).map(item => item.dataIndex),
     };
   }
 

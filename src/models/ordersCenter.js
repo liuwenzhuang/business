@@ -9,6 +9,7 @@ export default modelExtend(pageModel, {
   namespace: 'ordersCenter',
 
   state: {
+    type: PLANE,
     isSearchCardExpand: true,
     searchTypes: [...DATA[PLANE]['SEARCH_TYPES']],
     columns: [...DATA[PLANE]['COLUMNS']],
