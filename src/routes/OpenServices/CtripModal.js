@@ -49,9 +49,8 @@ const CtripModal = ({
     event.preventDefault();
     let fieldNames = [];
     // 不同状态下需要校验的表单不同
-    if (createCompanyAccount) fieldNames = ['email', 'password', 'isPreApprove'];
     if (bindCompanyAccount) fieldNames = ['appKey', 'appSecurity', 'ctripCorpID', 'isPreApprove'];
-    if (adjustPreApproveMode) fieldNames = ['isPreApprove'];
+    if (adjustPreApproveMode || createCompanyAccount) fieldNames = ['isPreApprove'];
     validateFields(fieldNames, (err, values) => {
       if (!err) {
         createCompanyAccount && onCreateCompanyAccount(values);
@@ -73,34 +72,6 @@ const CtripModal = ({
         <FormItem {...formItemLayout} label="手机号:">
           <span className="ant-form-text">{adminPhone}</span>
         </FormItem>
-        {createCompanyAccount ? (
-          <Fragment>
-            <FormItem {...formItemLayout} label="邮箱:">
-              {getFieldDecorator('email', {
-                rules: [
-                  {
-                    required: createCompanyAccount,
-                    message: '请输入邮箱!',
-                  },
-                  {
-                    type: 'email',
-                    message: '请输入正确的邮箱!',
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="密码设置:">
-              {getFieldDecorator('password', {
-                rules: [
-                  {
-                    required: createCompanyAccount,
-                    message: '请输入密码!',
-                  },
-                ],
-              })(<Input type="password" />)}
-            </FormItem>
-          </Fragment>
-        ) : null}
         {bindCompanyAccount ? (
           <Fragment>
             <FormItem {...formItemLayout} label="App Key:">
@@ -148,7 +119,12 @@ const CtripModal = ({
         {createCompanyAccount ? (
           <Fragment>
             <FormItem {...tailFormItemLayout}>
-              <Button style={{ width: '100%' }} type="primary" htmlType="submit">
+              <Button
+                style={{ width: '100%' }}
+                type="primary"
+                htmlType="submit"
+                loading={loading.effects['service/ctripCreateCompanyAccount']}
+              >
                 创建企业账户
               </Button>
             </FormItem>
@@ -166,7 +142,12 @@ const CtripModal = ({
         {bindCompanyAccount ? (
           <Fragment>
             <FormItem {...tailFormItemLayout}>
-              <Button style={{ width: '100%' }} type="primary" htmlType="submit">
+              <Button
+                style={{ width: '100%' }}
+                type="primary"
+                htmlType="submit"
+                loading={loading.effects['service/ctripBindCompanyAccount']}
+              >
                 绑定企业账户
               </Button>
             </FormItem>
@@ -186,7 +167,12 @@ const CtripModal = ({
         {adjustPreApproveMode ? (
           <Fragment>
             <FormItem {...tailFormItemLayout}>
-              <Button style={{ width: '100%' }} type="primary" htmlType="submit">
+              <Button
+                style={{ width: '100%' }}
+                type="primary"
+                htmlType="submit"
+                loading={loading.effects['service/ctripAdjustPreApproveMode']}
+              >
                 调整企业账户预定审批模式
               </Button>
             </FormItem>

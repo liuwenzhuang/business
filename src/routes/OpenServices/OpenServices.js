@@ -188,6 +188,7 @@ const OpenServices = ({ dispatch, service, loading }) => {
           disabled={record.isOpen}
           type="primary"
           onClick={() => APPLY_FUNCTION_MAPPING[`apply${record.key}`](record)}
+          loading={loading.effects['service/query']}
         >
           申请开通
         </Button>
