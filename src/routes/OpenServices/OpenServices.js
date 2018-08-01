@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Button, Table, Select } from 'antd';
 import { Api, serverUrl } from '../../config';
 import YBZModal from './YBZModal';
+import CtripModal from './CtripModal';
 
 const Option = Select.Option;
 
@@ -12,30 +13,35 @@ const SERVICE_MAPPING = {
 };
 
 const OpenServices = ({ dispatch, service, loading }) => {
-  const { data, rtpnrIsOpen, orgpk, modalVisible } = service;
-  const { ctripSme, rtpnr } = data;
-  const { tenantName, adminPhone, tenantId } = rtpnr;
+  const {
+    data,
+    rtpnrIsOpen,
+    orgpk,
+    isYBZModalVisible,
+    isCtripModalVisible,
+    isCtripAccountBinding,
+    isCtripAdjustPreApprove,
+  } = service;
+  const { ctripSme, rtpnr, tenantInfo } = data;
+  const { isPreApprove } = ctripSme;
+  const { tenantName, adminPhone, tenantId, adminName } = tenantInfo;
 
   // 操作列动作映射
   const APPLY_FUNCTION_MAPPING = {
     [`apply${SERVICE_MAPPING.CTRIP}`](record) {
       dispatch({
-        type: 'service/effectGetWithModal',
+        type: 'service/updateState',
         payload: {
-          url: Api.SMECTRIP.REGISTER_COMPANY,
+          isCtripModalVisible: true,
         },
-      }).then(() => {
-        dispatch({
-          type: 'service/query',
-          payload: {
-            url: Api.SERVICE.QUERY,
-          },
-        });
       });
     },
     [`apply${SERVICE_MAPPING.RTPNR}`](record) {
       dispatch({
-        type: 'service/showModal',
+        type: 'service/updateState',
+        payload: {
+          isYBZModalVisible: true,
+        },
       });
     },
   };
@@ -49,7 +55,6 @@ const OpenServices = ({ dispatch, service, loading }) => {
     [`render${SERVICE_MAPPING.RTPNR}`](record) {
       let { orgs } = rtpnr;
       let defaultValue = orgs.length ? orgs[0]['id'] : '';
-      console.log(defaultValue);
       return (
         <Fragment>
           {defaultValue ? (
@@ -76,6 +81,7 @@ const OpenServices = ({ dispatch, service, loading }) => {
   const SET_FUNCTION_MAPPING = {
     [`set${SERVICE_MAPPING.CTRIP}`](record) {
       return (
+        <Fragment>
         <Button
           disabled={!record.isOpen}
           type="primary"
@@ -84,6 +90,18 @@ const OpenServices = ({ dispatch, service, loading }) => {
         >
           后台设置
         </Button>
+        {
+          record.isOpen && (
+            <Button
+              type="primary"
+              onClick={handleCtripAdjustPreApproveMode}
+              style={{marginLeft: 12}}
+            >
+              预定前审批调整
+            </Button>
+          )
+        }
+        </Fragment>
       );
     },
     [`set${SERVICE_MAPPING.RTPNR}`](record) {
@@ -93,6 +111,16 @@ const OpenServices = ({ dispatch, service, loading }) => {
         </Button>
       );
     },
+  };
+
+  /**
+   * 携程预定前审批调整
+   */
+  const handleCtripAdjustPreApproveMode = () => {
+    dispatch({
+      type: 'service/updateState',
+      payload: { isCtripModalVisible: true, isCtripAdjustPreApprove: true }
+    });
   };
 
   /**
@@ -106,8 +134,8 @@ const OpenServices = ({ dispatch, service, loading }) => {
         tenantId,
         orgpk,
         adminPhone,
-      }
-    })
+      },
+    });
   };
 
   /**
@@ -175,13 +203,24 @@ const OpenServices = ({ dispatch, service, loading }) => {
 
   const modalProps = {
     destroyOnClose: true,
-    visible: modalVisible,
-    loading: loading.effects['service/applyAccountBind'],
-    onCancel() {
-      dispatch({ type: 'service/hideModal' });
-    },
+    loading,
     tenantName,
     adminPhone,
+    adminName,
+  };
+
+  const YBZModalProps = {
+    ...modalProps,
+    visible: isYBZModalVisible,
+    loading: loading.effects['service/applyAccountBind'],
+    onCancel() {
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          isYBZModalVisible: false,
+        },
+      });
+    },
     onAccountBind(values) {
       dispatch({
         type: 'service/applyAccountBind',
@@ -196,10 +235,72 @@ const OpenServices = ({ dispatch, service, loading }) => {
     },
   };
 
+  let CtripModalProps = {
+    ...modalProps,
+    visible: isCtripModalVisible,
+    isAccountBinding: isCtripAccountBinding,
+    isAdjustPreApprove: isCtripAdjustPreApprove,
+    isPreApprove,
+    onSwitchToBind() {
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          isCtripAccountBinding: true,
+        },
+      });
+    },
+    onSwitchToCreate() {
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          isCtripAccountBinding: false,
+        },
+      });
+    },
+    onCancel() {
+      dispatch({
+        type: 'service/updateState',
+        payload: {
+          isCtripModalVisible: false,
+          isCtripAccountBinding: false,
+          isCtripAdjustPreApprove: false,
+        },
+      });
+    },
+    onCreateCompanyAccount(values) {
+      dispatch({
+        type: 'service/ctripCreateCompanyAccount',
+        payload: {
+          ...values,
+          url: Api.SMECTRIP.REGISTER_COMPANY,
+        }
+      });
+    },
+    onBindCompanyAccount(values) {
+      dispatch({
+        type: 'service/ctripBindCompanyAccount',
+        payload: {
+          ...values,
+          url: Api.SMECTRIP.BIND_COMPANY,
+        }
+      });
+    },
+    onAdjustPreApproveMode({isPreApprove}) {
+      dispatch({
+        type: 'service/ctripAdjustPreApproveMode',
+        payload: {
+          authorizeType: isPreApprove,
+          url: Api.SMECTRIP.CHANGE_AUTHORIZE_TYPE
+        }
+      })
+    }
+  };
+
   return (
     <Fragment>
       <Table dataSource={dataSource} columns={columns} pagination={false} />
-      <YBZModal {...modalProps} />
+      <YBZModal {...YBZModalProps} />
+      <CtripModal {...CtripModalProps} />
     </Fragment>
   );
 };
