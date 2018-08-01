@@ -15,14 +15,36 @@ for (let i = 0; i < 45; i++) {
 
 let isCtripSmeOpen = false;
 let isRtpnrOpen = false;
+let isPreApprove = '0';
 
 module.exports = {
 
   [`GET /smeCtrip/registerCompany`](req, res) {
     isCtripSmeOpen = true;
+    const { query } = req;
+    isPreApprove = query.isPreApprove;
     res.status(200).json({
       code: '0',
       information: '开通成功',
+    });
+  },
+
+  [`POST /smeCtrip/bindCompany`](req, res) {
+    isCtripSmeOpen = true;
+    const { body } = req;
+    isPreApprove = body.isPreApprove;
+    res.status(200).json({
+      code: '0',
+      information: '绑定成功',
+    });
+  },
+
+  [`GET /smeCtrip/changeAuthorizeType`](req, res) {
+    const { query } = req;
+    isPreApprove = query.authorizeType;
+    res.status(200).json({
+      code: '0',
+      information: '操作成功',
     });
   },
 
@@ -63,13 +85,17 @@ module.exports = {
     res.status(200).json({
       code: 0,
       data: {
-        ctripSme: {
-          isOpen: isCtripSmeOpen,
-        },
-        rtpnr: {
+        tenantInfo: {
+          adminName: '青城',
           tenantName: '用友网络1',
           adminPhone: '17778135772',
           tenantId: 'ft9fbcrw',
+        },
+        ctripSme: {
+          isOpen: isCtripSmeOpen,
+          isPreApprove,
+        },
+        rtpnr: {
           orgs: [
             {
               isOpen: isRtpnrOpen,

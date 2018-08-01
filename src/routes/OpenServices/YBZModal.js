@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Modal, Input, Radio, Button } from 'antd';
 import PropTypes from 'prop-types';
-import styles from './YBZModal.less';
+import styles from './Modal.less';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;

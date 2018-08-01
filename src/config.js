@@ -40,6 +40,8 @@ const Api = {
   SMECTRIP: {
     IS_OPEN: `${smeCtripPrefix}/isOpen`,
     REGISTER_COMPANY: `${smeCtripPrefix}/registerCompany`,
+    BIND_COMPANY: `${smeCtripPrefix}/bindCompany`,
+    CHANGE_AUTHORIZE_TYPE: `${smeCtripPrefix}/changeAuthorizeType`,
     SSOLOGIN: `${smeCtripPrefix}/ssologin/pc`,
     SYNC_USERS: `${smeCtripPrefix}/syncUsers`,
     SYNC_ALL_USERS: `${smeCtripPrefix}/syncAllUsers`,

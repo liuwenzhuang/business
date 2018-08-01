@@ -10,18 +10,26 @@ export default modelExtend(pageModel, {
 
   state: {
     data: {
+      tenantInfo: {
+        tenantName: '',
+        tenantId: '',
+        adminName: '',
+        adminPhone: '',
+      },
       ctripSme: {
         isOpen: false,
+        isPreApprove: '0',
       },
       rtpnr: {
-        tenantName: '',
-        adminPhone: '',
-        tenantId: '',
         orgs: [],
       },
     },
     rtpnrIsOpen: false,
     orgpk: '',
+    isYBZModalVisible: false,
+    isCtripModalVisible: false,
+    isCtripAccountBinding: false,
+    isCtripAdjustPreApprove: false,
   },
 
   subscriptions: {
@@ -59,25 +67,83 @@ export default modelExtend(pageModel, {
       }
     },
 
+    /**
+     * 携程开通相关操作之后的操作
+     */
+    *ctripCommon({ payload }, { put }) {
+      const { information } = payload;
+      // 关闭弹窗
+      yield put({
+        type: 'updateState',
+        payload: {
+          isCtripModalVisible: false,
+          isCtripAccountBinding: false,
+          isCtripAdjustPreApprove: false,
+        },
+      });
+      // 成功提示
+      yield put({
+        type: 'showSuccessModal',
+        payload: { title: '提示', content: information },
+      });
+      // 重新加载列表
+      yield put({ type: 'query' });
+    },
+
+    /**
+     * 创建企业账户
+     */
+    *ctripCreateCompanyAccount({ payload }, { call, put }) {
+      const { success, information } = yield call(commonGet, payload);
+      if (success) {
+        yield put({
+          type: 'ctripCommon',
+          payload: { information },
+        });
+      }
+    },
+
+    /**
+     * 绑定企业账户
+     */
+    *ctripBindCompanyAccount({ payload }, { call, put }) {
+      const { success, information } = yield call(commonPost, payload);
+      if (success) {
+        yield put({
+          type: 'ctripCommon',
+          payload: { information },
+        });
+      }
+    },
+
+    /**
+     * 调整预定审批模式
+     */
+    *ctripAdjustPreApproveMode({ payload }, { call, put }) {
+      const { success, information } = yield call(commonGet, payload);
+      if (success) {
+        yield put({
+          type: 'ctripCommon',
+          payload: { information },
+        });
+      }
+    },
+
     *applyAccountBind({ payload }, { call, put }) {
       const { success, information } = yield call(commonPost, payload);
       if (success) {
         // 关闭弹窗
         yield put({
-          type: 'hideModal',
+          type: 'updateState',
+          payload: { isYBZModalVisible: false },
         });
         // 成功提示
         yield put({
           type: 'showSuccessModal',
-          payload: {
-            title: '提示',
-            content: information,
-          },
+          payload: { title: '提示', content: information },
         });
         // 重新加载列表
-        yield put({
-          type: 'query',
-        });
+        yield put({ type: 'query' });
       }
     },
 
