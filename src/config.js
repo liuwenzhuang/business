@@ -52,6 +52,11 @@ const Api = {
     QUERY: `/bri/openStateList`,
     OPEN_RTPNR: `/bri/open`,
     RTPNR_SERVER_SET: `/bri/manageurl`,
+  },
+  ORDERSCENTER: {
+    QUERY_MENU_OPTIONS: '/bri/menuOptions',
+    QUERY_ORDER_INFOS: '/bri/orderInfos',
+    EXPORT_ORDER: '/bri/exportOrder',
   }
 };
 
