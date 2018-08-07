@@ -1,11 +1,13 @@
 import React from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Modal } from 'antd';
 import { connect } from 'dva';
 import { PLANE, HOTEL, TRAIN, CAR, OTHER, DATA } from './Constants';
 import QueryCard from './QueryCard';
 import ResultTable from './ResultTable';
 import styles from './index.less';
 import ColumnsModal from './ColumnsModal';
+import { serverUrl, Api } from '../../config';
+import { stringify } from 'querystring';
 
 const TabPane = Tabs.TabPane;
 const ORDER_TYPES = [
@@ -32,7 +34,17 @@ const ORDER_TYPES = [
 ];
 
 const OrdersCenter = ({ dispatch, ordersCenter, loading }) => {
-  const { type, isSearchCardExpand, searchTypes, columns, list, pagination, modalVisible } = ordersCenter;
+  const {
+    type,
+    isSearchCardExpand,
+    searchTypes,
+    searchValues,
+    menuOptions,
+    columns,
+    list,
+    pagination,
+    modalVisible,
+  } = ordersCenter;
 
   const handleTabsChange = key => {
     dispatch({
@@ -43,11 +55,13 @@ const OrdersCenter = ({ dispatch, ordersCenter, loading }) => {
         columns: [...DATA[key]['COLUMNS']],
       },
     });
+    dispatch({ type: 'ordersCenter/queryTable' });
   };
 
   const queryCardProps = {
     searchTypes,
     isSearchCardExpand,
+    menuOptions,
     onFormReset() {
       console.log('form reset');
     },
@@ -65,6 +79,19 @@ const OrdersCenter = ({ dispatch, ordersCenter, loading }) => {
     },
     onSearch(values) {
       console.log('查询操作', values);
+      dispatch({
+        type: 'ordersCenter/updateState',
+        payload: { searchValues: values },
+      });
+      dispatch({
+        type: 'ordersCenter/queryTable',
+        payload: {
+          type,
+          current: 1,
+          pageSize: 10,
+          ...values,
+        },
+      });
     },
   };
 
@@ -72,9 +99,40 @@ const OrdersCenter = ({ dispatch, ordersCenter, loading }) => {
     columns: [...columns].filter(item => item.checked),
     list,
     pagination,
-    loading: loading.effects['ordersCenter/query'],
+    loading: loading.effects['ordersCenter/queryTable'],
+    onChange: pagination => {
+      const { current, pageSize } = pagination;
+      dispatch({
+        type: 'ordersCenter/queryTable',
+        payload: {
+          type,
+          current,
+          pageSize,
+          ...searchValues,
+        },
+      });
+    },
     onDownload() {
-      console.log('download start');
+      const url = `${serverUrl}${Api.ORDERSCENTER.EXPORT_ORDER}?${encodeURI(stringify({
+        type,
+        ...searchValues,
+      }))}`;
+      let isUrlBlock = false;
+      try {
+        const winRef = window.open(url, '_blank');
+        if (!winRef) isUrlBlock = true;
+      } catch (e) {
+        isUrlBlock = true;
+      }
+      if (isUrlBlock) {
+        Modal.warn({
+          title: '提示',
+          content: React.createElement('div', null, [
+            `检测到浏览器拦截了弹出窗口，请允许此页面弹出窗口或`,
+            React.createElement('a', { target: '_blank', href: url, key: url }, '直接进入'),
+          ]),
+        });
+      }
     },
     onTableManage() {
       dispatch({
@@ -111,7 +169,7 @@ const OrdersCenter = ({ dispatch, ordersCenter, loading }) => {
         {ORDER_TYPES.map(type => {
           const { tab, key } = type;
           return (
-            <TabPane tab={tab} key={key}>
+            <TabPane tab={tab} key={key} disabled={key !== PLANE}>
               <QueryCard type={key} {...queryCardProps} />
               <ResultTable {...tableProps} />
             </TabPane>

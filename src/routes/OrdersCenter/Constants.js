@@ -1,10 +1,12 @@
 import moment from 'moment';
 
-const PLANE = 'plane';
+const PLANE = 'flight';
 const HOTEL = 'hotel';
 const TRAIN = 'train';
 const CAR = 'car';
 const OTHER = 'other';
+
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 const DATA = {
   [PLANE]: {
@@ -21,7 +23,7 @@ const DATA = {
         type: 'RangePicker',
       },
       {
-        key: 'reservePerson',
+        key: 'orderMan',
         label: '预订人',
         type: 'Input',
       },
@@ -31,145 +33,95 @@ const DATA = {
         type: 'Input',
       },
       {
-        key: 'relatedJourneyNO',
+        key: 'relateYBZID',
         label: '关联行程号',
         type: 'Input',
       },
       {
-        key: 'orderSource',
+        key: 'fromType',
         label: '订单来源',
         type: 'Select',
-        options: [
-          {
-            label: '携程',
-            value: '1',
-          },
-          {
-            label: '飞猪',
-            value: '2',
-          },
-        ],
       },
       {
         key: 'orderStatus',
         label: '订单状态',
         type: 'Select',
-        options: [
-          {
-            label: '已审批',
-            value: '1',
-          },
-          {
-            label: '未审批',
-            value: '2',
-          },
-        ],
       },
       {
         key: 'payType',
         label: '支付类型',
         type: 'Select',
-        options: [
-          {
-            label: '支付宝',
-            value: '1',
-          },
-          {
-            label: '网银',
-            value: '2',
-          },
-        ],
       },
       {
-        key: 'flightType',
+        key: 'isDomc',
         label: '航班类型',
         type: 'Select',
-        options: [
-          {
-            label: '国内航班',
-            value: '1',
-          },
-          {
-            label: '国际航班',
-            value: '2',
-          },
-        ],
       },
       {
-        key: 'payMode',
+        key: 'payWay',
         label: '支付方式',
         type: 'Select',
-        options: [
-          {
-            label: '网银',
-            value: '1',
-          },
-          {
-            label: '支付宝',
-            value: '2',
-          },
-        ],
       },
       {
-        key: 'orderID',
+        key: 'orderNo',
         label: '订单号',
-        type: 'Inputz',
+        type: 'Input',
       },
     ],
     COLUMNS: [
       {
         title: '预定来源',
-        dataIndex: 'reserveSource',
+        dataIndex: 'fromType',
         checked: true,
       },
       {
         title: '订单类型',
-        dataIndex: 'ordertype',
+        dataIndex: 'orderType',
         checked: false,
       },
       {
         title: '原单号',
-        dataIndex: 'originalOrderNO',
+        dataIndex: 'oldOrderNo',
         checked: true,
       },
       {
         title: '订单号',
-        dataIndex: 'orderID',
+        dataIndex: 'orderNo',
         checked: true,
       },
       {
         title: '预订人',
-        dataIndex: 'reservePerson',
+        dataIndex: 'createBy',
         checked: true,
       },
       {
         title: '员工编号',
-        dataIndex: 'staffID',
+        dataIndex: 'oaUserCode',
         checked: true,
       },
       {
         title: '乘机人',
-        dataIndex: 'passenger',
+        dataIndex: 'psgName',
         checked: true,
       },
       {
         title: '乘机人职级',
-        dataIndex: 'passengerRank',
+        dataIndex: 'psgLevel',
         checked: true,
       },
       {
         title: '航班类型',
-        dataIndex: 'flightType',
+        dataIndex: 'isDomc',
         checked: true,
       },
       {
         title: '航程',
-        dataIndex: 'flightRange',
+        dataIndex: 'flightWay',
         checked: true,
       },
       {
         title: '航空公司',
-        dataIndex: 'airlineCompany',
+        dataIndex: 'carrierName',
         checked: true,
       },
       {
@@ -179,7 +131,7 @@ const DATA = {
       },
       {
         title: '舱位级别',
-        dataIndex: 'spaceLevel',
+        dataIndex: 'classLevelName',
         checked: true,
       },
       {
@@ -189,62 +141,62 @@ const DATA = {
       },
       {
         title: '全价',
-        dataIndex: 'fullPrice',
+        dataIndex: 'yPrice',
         checked: true,
       },
       {
         title: '折扣',
-        dataIndex: 'discount',
+        dataIndex: 'classRebate',
         checked: true,
       },
       {
         title: '票面价',
-        dataIndex: 'ticketPrice',
+        dataIndex: 'farePricez',
         checked: true,
       },
       {
         title: '机建+燃油',
-        dataIndex: 'builtAircraftAndFuel',
+        dataIndex: 'consturctAndFuel',
         checked: true,
       },
       {
         title: '保险',
-        dataIndex: 'premium',
+        dataIndex: 'sumInsMoney',
         checked: false,
       },
       {
         title: '送票费',
-        dataIndex: 'ticketDeliveryCharge',
+        dataIndex: 'sendTicketFee',
         checked: false,
       },
       {
         title: '服务费',
-        dataIndex: 'serviceCharge',
+        dataIndex: 'counterFee',
         checked: false,
       },
       {
         title: '绑定服务费',
-        dataIndex: 'bindServiceCharge',
+        dataIndex: 'bindCounterFee',
         checked: false,
       },
       {
         title: '改签费',
-        dataIndex: 'changeCharge',
+        dataIndex: 'changeFee',
         checked: true,
       },
       {
         title: '退票费',
-        dataIndex: 'refundCharge',
+        dataIndex: 'tpPrice',
         checked: true,
       },
       {
         title: '结算币种',
-        dataIndex: 'settlementCurrency',
+        dataIndex: 'currency',
         checked: false,
       },
       {
         title: '实付金额',
-        dataIndex: 'indeedPay',
+        dataIndex: 'paymentPrice',
         checked: true,
       },
       {
@@ -254,62 +206,62 @@ const DATA = {
       },
       {
         title: '预定方式',
-        dataIndex: 'reserveType',
+        dataIndex: 'preOrderMode',
         checked: true,
       },
       {
         title: '机票类型',
-        dataIndex: 'ticketType',
+        dataIndex: 'psgType',
         checked: true,
       },
       {
         title: '提前预定天数',
-        dataIndex: 'aheadReserveDays',
+        dataIndex: 'preDays',
         checked: true,
       },
       {
         title: '预定时间',
-        dataIndex: 'reserveDate',
+        dataIndex: 'orderTime',
         checked: true,
       },
       {
         title: '起飞时间',
-        dataIndex: 'flyTime',
+        dataIndex: 'flightDateTime',
         checked: true,
       },
       {
         title: '到达时间',
-        dataIndex: 'arrivalTime',
+        dataIndex: 'flightEndDateTime',
         checked: true,
       },
       {
         title: '未提前预定原因',
-        dataIndex: 'reasonForLaterReserve',
+        dataIndex: 'noPreOrderReason',
         checked: false,
       },
       {
         title: '未预定最低价原因',
-        dataIndex: 'reasonForReserveHigherPrice',
+        dataIndex: 'noOrderLowstReason',
         checked: true,
       },
       {
         title: '溢价预定原因',
-        dataIndex: 'reasonForPremiumReserve',
+        dataIndex: 'premiumReason',
         checked: false,
       },
       {
         title: '部门1',
-        dataIndex: 'dept1',
+        dataIndex: 'department1',
         checked: true,
       },
       {
         title: '部门2',
-        dataIndex: 'dept2',
+        dataIndex: 'department2',
         checked: false,
       },
       {
         title: '部门3',
-        dataIndex: 'dept3',
+        dataIndex: 'department3',
         checked: false,
       },
       {
@@ -329,22 +281,22 @@ const DATA = {
       },
       {
         title: '关联行程号',
-        dataIndex: 'relatedJourneyNO',
+        dataIndex: 'relateYBZID',
         checked: true,
       },
       {
         title: '关联申请号',
-        dataIndex: 'relatedApplyNO',
+        dataIndex: 'relateOtherID',
         checked: false,
       },
       {
         title: '授权状态',
-        dataIndex: 'authorizationStatus',
+        dataIndex: 'authStatus',
         checked: false,
       },
       {
         title: '报销状态',
-        dataIndex: 'reimburseStatus',
+        dataIndex: 'bxStatus',
         checked: true,
       },
       {
@@ -354,27 +306,27 @@ const DATA = {
       },
       {
         title: '自定义字段1',
-        dataIndex: 'def1',
+        dataIndex: 'defItem1',
         checked: false,
       },
       {
         title: '自定义字段2',
-        dataIndex: 'def2',
+        dataIndex: 'defItem2',
         checked: false,
       },
       {
         title: '自定义字段3',
-        dataIndex: 'def3',
+        dataIndex: 'defItem3',
         checked: false,
       },
       {
         title: '自定义字段4',
-        dataIndex: 'def4',
+        dataIndex: 'defItem4',
         checked: false,
       },
       {
         title: '自定义字段5',
-        dataIndex: 'def5',
+        dataIndex: 'defItem5',
         checked: false,
       },
     ],
@@ -591,17 +543,17 @@ const DATA = {
       },
       {
         title: '部门1',
-        dataIndex: 'dept1',
+        dataIndex: 'department1',
         checked: true,
       },
       {
         title: '部门2',
-        dataIndex: 'dept2',
+        dataIndex: 'department2',
         checked: false,
       },
       {
         title: '部门3',
-        dataIndex: 'dept3',
+        dataIndex: 'department3',
         checked: false,
       },
       {
@@ -646,27 +598,27 @@ const DATA = {
       },
       {
         title: '自定义字段1',
-        dataIndex: 'def1',
+        dataIndex: 'defItem1',
         checked: false,
       },
       {
         title: '自定义字段2',
-        dataIndex: 'def2',
+        dataIndex: 'defItem2',
         checked: false,
       },
       {
         title: '自定义字段3',
-        dataIndex: 'def3',
+        dataIndex: 'defItem3',
         checked: false,
       },
       {
         title: '自定义字段4',
-        dataIndex: 'def4',
+        dataIndex: 'defItem4',
         checked: false,
       },
       {
         title: '自定义字段5',
-        dataIndex: 'def5',
+        dataIndex: 'defItem5',
         checked: false,
       },
     ],
@@ -888,17 +840,17 @@ const DATA = {
       },
       {
         title: '部门1',
-        dataIndex: 'dept1',
+        dataIndex: 'department1',
         checked: true,
       },
       {
         title: '部门2',
-        dataIndex: 'dept2',
+        dataIndex: 'department2',
         checked: false,
       },
       {
         title: '部门3',
-        dataIndex: 'dept3',
+        dataIndex: 'department3',
         checked: false,
       },
       {
@@ -943,31 +895,31 @@ const DATA = {
       },
       {
         title: '自定义字段1',
-        dataIndex: 'def1',
+        dataIndex: 'defItem1',
         checked: false,
       },
       {
         title: '自定义字段2',
-        dataIndex: 'def2',
+        dataIndex: 'defItem2',
         checked: false,
       },
       {
         title: '自定义字段3',
-        dataIndex: 'def3',
+        dataIndex: 'defItem3',
         checked: false,
       },
       {
         title: '自定义字段4',
-        dataIndex: 'def4',
+        dataIndex: 'defItem4',
         checked: false,
       },
       {
         title: '自定义字段5',
-        dataIndex: 'def5',
+        dataIndex: 'defItem5',
         checked: false,
       },
     ],
   },
 };
 
-export { PLANE, HOTEL, TRAIN, CAR, OTHER, DATA };
+export { PLANE, HOTEL, TRAIN, CAR, OTHER, DATE_FORMAT, DATA };
