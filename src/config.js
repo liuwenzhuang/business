@@ -10,7 +10,6 @@ const authorEmail = 'liuwzhb@yonyou.com';
 const ctripApiPrefix = '/ctrip';
 const ctripGroupPrefix = '/ctrip/ctripGroup';
 const smeCtripPrefix = '/smeCtrip';
-const orderPrefix = '/ordersCenter';
 
 const Api = {
   CTRIP: {
@@ -55,7 +54,9 @@ const Api = {
     RTPNR_SERVER_SET: `/bri/manageurl`,
   },
   ORDERSCENTER: {
-    QUERY: `${orderPrefix}/query`,
+    QUERY_MENU_OPTIONS: '/bri/menuOptions',
+    QUERY_ORDER_INFOS: '/bri/orderInfos',
+    EXPORT_ORDER: '/bri/exportOrder',
   }
 };
 

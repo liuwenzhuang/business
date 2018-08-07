@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Card, Form, Row, Col, Input, DatePicker, Select, Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
-import { PLANE } from './Constants';
+import { PLANE, DATE_FORMAT } from './Constants';
 import styles from './QueryCard.less'; // eslint-disable-line
 
 const FormItem = Form.Item;
@@ -33,6 +33,7 @@ const rightColResponsiveProps = {
 const QueryCard = ({
   type = PLANE,
   searchTypes,
+  menuOptions,
   form,
   onSearch,
   onFormReset,
@@ -52,7 +53,22 @@ const QueryCard = ({
     event.preventDefault();
     validateFieldsAndScroll((err, values) => {
       if (!err) {
-        onSearch(values);
+        let resultValues = null;
+        switch (type) {
+          case PLANE:
+            const { reserveDate = [], flyDate = [] } = values;
+            resultValues = {
+              ...values,
+              beginOrder: reserveDate.length ? reserveDate[0].format(DATE_FORMAT) : '',
+              endOrder: reserveDate.length ? reserveDate[1].format(DATE_FORMAT) : '',
+              beginFlight: flyDate.length ? flyDate[0].format(DATE_FORMAT) : '',
+              endFlight: flyDate.length ? flyDate[1].format(DATE_FORMAT) : '',
+            };
+            break;
+          default:
+            break;
+        }
+        onSearch(resultValues);
       }
     });
   };
@@ -62,9 +78,10 @@ const QueryCard = ({
       <Form layout="vertical" onSubmit={handleSubmit} hideRequiredMark>
         {isSearchCardExpand ? (
           <Fragment>
-            <Row gutter={16} type='flex' align='bottom'>
-              {searchTypes.map((searchType) => {
-                const { key, type, label, defaultValue, options } = searchType;
+            <Row gutter={16} type="flex" align="bottom">
+              {searchTypes.map(searchType => {
+                const { key, type, label, defaultValue } = searchType;
+                const options = menuOptions[key];
                 switch (type) {
                   case 'RangePicker':
                     return (
@@ -72,34 +89,31 @@ const QueryCard = ({
                         <FormItem label={label}>
                           {getFieldDecorator(key, {
                             initialValue: defaultValue,
-                          })(
-                            <RangePicker placeholder={['开始日期', '结束日期']} />
-                          )}
+                          })(<RangePicker placeholder={['开始日期', '结束日期']} />)}
                         </FormItem>
                       </Col>
                     );
                   case 'Input':
-                  return (
+                    return (
                       <Col {...colResponsiveProps} key={key}>
                         <FormItem label={label}>
-                          {getFieldDecorator(key)(
-                            <Input placeholder={`请输入${label}`} />
-                          )}
+                          {getFieldDecorator(key)(<Input placeholder={`请输入${label}`} />)}
                         </FormItem>
                       </Col>
                     );
                   case 'Select':
-                  return (
+                    return (
                       <Col {...colResponsiveProps} key={key}>
                         <FormItem label={label}>
                           {getFieldDecorator(key, {
-                            initialValue: '0'
+                            initialValue: 'all',
                           })(
                             <Select>
-                              <Option value="0">全部</Option>
-                              {
-                                options.map(({value, label}) => <Option key={value} value={value}>{label}</Option>)
-                              }
+                              {options.map(({ value, label }) => (
+                                <Option key={value} value={value}>
+                                  {label}
+                                </Option>
+                              ))}
                             </Select>
                           )}
                         </FormItem>
